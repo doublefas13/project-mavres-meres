@@ -1,58 +1,104 @@
 <template>
-  <div class="hello">
-    <h1>{{ msg }}</h1>
-    <p>
-      For a guide and recipes on how to configure / customize this project,<br>
-      check out the
-      <a href="https://cli.vuejs.org" target="_blank" rel="noopener">vue-cli documentation</a>.
-    </p>
-    <h3>Installed CLI Plugins</h3>
-    <ul>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-babel" target="_blank" rel="noopener">babel</a></li>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-eslint" target="_blank" rel="noopener">eslint</a></li>
-    </ul>
-    <h3>Essential Links</h3>
-    <ul>
-      <li><a href="https://vuejs.org" target="_blank" rel="noopener">Core Docs</a></li>
-      <li><a href="https://forum.vuejs.org" target="_blank" rel="noopener">Forum</a></li>
-      <li><a href="https://chat.vuejs.org" target="_blank" rel="noopener">Community Chat</a></li>
-      <li><a href="https://twitter.com/vuejs" target="_blank" rel="noopener">Twitter</a></li>
-      <li><a href="https://news.vuejs.org" target="_blank" rel="noopener">News</a></li>
-    </ul>
-    <h3>Ecosystem</h3>
-    <ul>
-      <li><a href="https://router.vuejs.org" target="_blank" rel="noopener">vue-router</a></li>
-      <li><a href="https://vuex.vuejs.org" target="_blank" rel="noopener">vuex</a></li>
-      <li><a href="https://github.com/vuejs/vue-devtools#vue-devtools" target="_blank" rel="noopener">vue-devtools</a></li>
-      <li><a href="https://vue-loader.vuejs.org" target="_blank" rel="noopener">vue-loader</a></li>
-      <li><a href="https://github.com/vuejs/awesome-vue" target="_blank" rel="noopener">awesome-vue</a></li>
-    </ul>
+  <header>
+    <h1 class="h1-main">{{ title }}</h1>
+  </header>
+  <div class="container-main">
+    <div class="container-div" v-for="temp1 in mainApi" :key="temp1.id">
+      <div class="image">
+        <img :src="temp1.jetpack_featured_media_url" alt="" />
+      </div>
+      <div class="content">
+        <div class="head-line" v-html="temp1.parsely.meta.headline"></div>
+        <div class="post" v-html="temp1.excerpt.rendered"></div>
+        <div class="div-end">
+          <div>{{ temp1.date }}</div>
+          <div>{{ temp1.parsely.meta.creator[0] }}</div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
-<script>
-export default {
-  name: 'HelloWorld',
-  props: {
-    msg: String
-  }
-}
+<script setup>
+const title = "MAVRES MERES";
+const mainApi = ref([]);
+
+import axios from "axios";
+import { ref } from "vue";
+
+const temp = await axios.get(`https://techcrunch.com/wp-json/wp/v2/posts`);
+mainApi.value = temp.data;
+console.log(mainApi.value);
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-h3 {
-  margin: 40px 0 0;
+<style>
+html {
+  background-color: #fec007;
 }
-ul {
-  list-style-type: none;
+.h1-main {
+  display: flex;
+  justify-content: center;
+  padding: 1rem;
+}
+.container-main {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin: 0;
+  justify-content: space-around;
+}
+.container-div {
+  display: flex;
+  flex-direction: column;
+  max-width: 28%;
+  max-height: 30%;
+  background-color: #ffffff;
+  justify-content: space-between;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 5px 5px #e6b521;
+}
+
+.content {
+  padding: 1rem;
+}
+
+.div-end {
+  display: flex;
+  justify-content: space-between;
+  color: #999da0;
+}
+
+.image {
+  max-width: 100%;
+  object-fit: contain;
+}
+
+img {
+  width: 100%;
+  height: 100%;
+}
+
+.head-line {
+  font-size: large;
+  font-weight: bold;
+  color: #2e343a;
+  display: flex;
+  justify-content: center;
+}
+
+.post {
+  color: #999da0;
+}
+
+.wp-caption {
+  width: fit-content !important;
+}
+
+.youtube-player {
+  width: fit-content !important;
   padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
+  margin: 0;
 }
 </style>
