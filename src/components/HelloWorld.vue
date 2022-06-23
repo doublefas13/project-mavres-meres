@@ -1,6 +1,6 @@
 <template>
   <header>
-    <h1 class="h1-main">{{ title }}</h1>
+    <h1 class="h1-main">{{ title }}!</h1>
   </header>
   <div class="container-main">
     <div class="container-div" v-for="temp1 in mainApi" :key="temp1.id">
