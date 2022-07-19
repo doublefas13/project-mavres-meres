@@ -1,6 +1,6 @@
 <template>
   <Suspense>
-    <HelloWorld msg="Welcome to Your Vue.js App" />
+    <HelloWorld />
     <template #fallback>
       <div>loading...</div>
     </template>

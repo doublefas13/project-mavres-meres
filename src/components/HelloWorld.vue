@@ -1,104 +1,90 @@
 <template>
-  <header>
-    <h1 class="h1-main">{{ title }}!</h1>
-  </header>
-  <div class="container-main">
-    <div class="container-div" v-for="temp1 in mainApi" :key="temp1.id">
-      <div class="image">
-        <img :src="temp1.jetpack_featured_media_url" alt="" />
-      </div>
-      <div class="content">
-        <div class="head-line" v-html="temp1.parsely.meta.headline"></div>
-        <div class="post" v-html="temp1.excerpt.rendered"></div>
-        <div class="div-end">
-          <div>{{ temp1.date }}</div>
-          <div>{{ temp1.parsely.meta.creator[0] }}</div>
-        </div>
-      </div>
+  <h1>
+    {{ title }}
+    <select name="character" id="character" v-model="selectedCharacter">
+      <option
+        :value="character"
+        v-for="character in characters"
+        :key="character.char_id"
+      >
+        {{ character.name }}
+      </option>
+    </select>
+
+    <select
+      name="seasonByCharacter"
+      id="seasonByCharacter"
+      v-model="selectedSeason"
+      v-if="selectedCharacter"
+    >
+      <option
+        :value="seasonByCharacter"
+        v-for="seasonByCharacter in selectedCharacter.appearance"
+        :key="seasonByCharacter.char_id"
+      >
+        {{ seasonByCharacter }}
+      </option>
+    </select>
+  </h1>
+
+  <card
+    v-if="selectedCharacter"
+    :imageUrl="selectedCharacter.img"
+    :nickname="selectedCharacter.nickname"
+    :name="selectedCharacter.name"
+    :status="selectedCharacter.status"
+    :birthday="selectedCharacter.birthday"
+    :actor="selectedCharacter.portrayed"
+  >
+  </card>
+  <div v-if="selectedCharacter">
+    <div
+      class="epi"
+      v-for="episode in filterEpisodesByCharacter"
+      :key="episode.episode_id"
+    >
+      <cardEpisodes
+        :nameEpisode="episode.title"
+        :episode="episode.episode"
+        :season="episode.season"
+      >
+      </cardEpisodes>
     </div>
   </div>
 </template>
 
 <script setup>
-const title = "MAVRES MERES";
-const mainApi = ref([]);
-
 import axios from "axios";
-import { ref } from "vue";
+import { ref, computed } from "vue";
+import card from "./CardComponent.vue";
+import cardEpisodes from "./CardComponetEpisodes.vue";
 
-const temp = await axios.get(`https://techcrunch.com/wp-json/wp/v2/posts`);
-mainApi.value = temp.data;
-console.log(mainApi.value);
+const title = "allh mia mavrh mera";
+const episodes = ref([]);
+const characters = ref([]);
+const selectedCharacter = ref("");
+const selectedSeason = ref([]);
+
+const filterEpisodesByCharacter = computed(() => {
+  return episodes.value.filter((episode) => {
+    if (selectedCharacter.value) {
+      return (
+        episode.characters.includes(selectedCharacter.value.nickname) ||
+        (episode.characters.includes(selectedCharacter.value.name) &&
+          episode.season == selectedSeason.value)
+      );
+    }
+    return episode;
+  });
+});
+console.log(filterEpisodesByCharacter);
+const episodesApi = await axios.get("https://breakingbadapi.com/api/episodes");
+episodes.value = episodesApi.data;
+
+const charactersApi = await axios.get(
+  `https://breakingbadapi.com/api/characters`
+);
+characters.value = charactersApi.data;
 </script>
 
-<style>
-html {
-  background-color: #fec007;
-}
-.h1-main {
-  display: flex;
-  justify-content: center;
-  padding: 1rem;
-}
-.container-main {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  gap: 1rem;
-  margin: 0;
-  justify-content: space-around;
-}
-.container-div {
-  display: flex;
-  flex-direction: column;
-  max-width: 28%;
-  max-height: 30%;
-  background-color: #ffffff;
-  justify-content: space-between;
-  border-radius: 15px;
-  overflow: hidden;
-  box-shadow: 5px 5px #e6b521;
-}
-
-.content {
-  padding: 1rem;
-}
-
-.div-end {
-  display: flex;
-  justify-content: space-between;
-  color: #999da0;
-}
-
-.image {
-  max-width: 100%;
-  object-fit: contain;
-}
-
-img {
-  width: 100%;
-  height: 100%;
-}
-
-.head-line {
-  font-size: large;
-  font-weight: bold;
-  color: #2e343a;
-  display: flex;
-  justify-content: center;
-}
-
-.post {
-  color: #999da0;
-}
-
-.wp-caption {
-  width: fit-content !important;
-}
-
-.youtube-player {
-  width: fit-content !important;
-  padding: 0;
-  margin: 0;
-}
-</style>
+<style></style>
