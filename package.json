@@ -36,9 +36,7 @@
     "node-sass": "^7.0.1",
     "sass-loader": "^13.0.2",
     "vue-cli-plugin-axios": "^0.0.4",
-    "vue-cli-plugin-tailwind": "^3.0.0",
-    "vue-cli-plugin-vuetify": "~2.5.1",
-    "webpack-plugin-vuetify": "^2.0.0-alpha.0"
+    "vue-cli-plugin-tailwind": "^3.0.0"
   },
   "eslintConfig": {
     "root": true,
