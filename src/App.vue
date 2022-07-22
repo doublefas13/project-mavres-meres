@@ -19,5 +19,7 @@ onMounted(() => {
     );
   }
 });
+
+store.dispatch("fetchProducts");
 </script>
 <style></style>

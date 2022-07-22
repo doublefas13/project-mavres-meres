@@ -9,6 +9,7 @@ export default createStore({
     selectedItem: {},
     queryText: "",
     activeCategory: "",
+    productCategories: [],
   },
 
   getters: {
@@ -32,6 +33,10 @@ export default createStore({
     getActiveCategory(state) {
       return state.activeCategory;
     },
+
+    getProductCategories(state) {
+      return state.productCategories;
+    },
   },
 
   actions: {
@@ -50,14 +55,19 @@ export default createStore({
 
       commit("setStoreApi", data);
       commit("setSelectedCategory");
+      commit("setProductCategories");
     },
 
-    async createProduct() {
+    async createProduct(store, item) {
       const { data } = await axios.post(`https://fakestoreapi.com/products`, {
-        price: 13.5,
+        id: item.id,
+        title: item.title,
+        price: item.price,
+        category: item.category,
       });
 
       console.log(data);
+      console.log(item);
     },
 
     async fetchProductsByCategory({ commit }, item) {
@@ -85,6 +95,15 @@ export default createStore({
 
     setSelectedCategory(state, category) {
       return (state.activeCategory = category);
+    },
+
+    setProductCategories(state) {
+      state.resultsApi.map((item) => {
+        if (!~state.productCategories.indexOf(item.category)) {
+          state.productCategories.push(item.category);
+        }
+        console.log(state.productCategories);
+      });
     },
   },
 

@@ -64,7 +64,12 @@
             {{ item.title }}
           </div>
           <div>
-            <Rating class="" v-model="item.rating.rate" :cancel="false" />
+            <Rating
+              class=""
+              v-model="item.rating.rate"
+              :readonly="true"
+              :cancel="false"
+            />
           </div>
 
           <div class="font-bold">price: {{ item.price }} $</div>
@@ -112,7 +117,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from "vue";
+import { ref, computed } from "vue";
 import Rating from "primevue/rating";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
@@ -127,7 +132,7 @@ const sortingOptions = [
   { name: "lower to higher", value: "asc" },
 ];
 const dropDownOption = ref("");
-const productsCategories = ref([]);
+
 const products = computed(() => {
   return store.getters["getFilterItems"];
 });
@@ -143,8 +148,8 @@ const addToCart = (item) => {
   });
 };
 
-const create = () => {
-  store.dispatch("createProduct");
+const create = (item) => {
+  store.dispatch("createProduct", item);
 };
 
 const selectedProduct = (item) => {
@@ -152,15 +157,16 @@ const selectedProduct = (item) => {
   router.push(`/product/${item.id}`);
 };
 
-onMounted(async () => {
-  await fetchProducts();
-
-  products.value.map((item) => {
-    if (!~productsCategories.value.indexOf(item.category)) {
-      productsCategories.value.push(item.category);
-    }
-  });
+const productsCategories = computed(() => {
+  return store.getters["getProductCategories"];
 });
+// onMounted(async () => {
+//   products.value.map((item) => {
+//     if (!~productsCategories.value.indexOf(item.category)) {
+//       productsCategories.value.push(item.category);
+//     }
+//   });
+// });
 
 const fetchProducts = () => {
   return store.dispatch("fetchProducts", dropDownOption.value);

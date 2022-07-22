@@ -1,6 +1,9 @@
 <template>
-  <div v-if="cartCount != 0" class="flex flex-row gap-3 justify-center my-2">
-    <div class="border-1 shadow-md rounded-md p-2">
+  <div
+    v-if="cartCount != 0"
+    class="flex flex-row gap-3 container m-auto justify-between my-2"
+  >
+    <div class="border-1 shadow-md rounded-md flex-1 p-2">
       <div class="border-b-2">
         <strong class="text-xl">Cart</strong> {{ cartCount }} lines
         <span class="text-[#848484]">({{ totalItems }} items)</span>
@@ -21,7 +24,7 @@
             }"
           ></div>
 
-          <div class="flex flex-row justify-between flex-1">
+          <div class="flex flex-row justify-between w-[100%] flex-1">
             <div>
               <div class="flex pr-8">{{ item.product.title }}</div>
               <div>Usually processed within 3 days.</div>
